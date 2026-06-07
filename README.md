@@ -2,10 +2,10 @@
 
 # 🎨 Logos Apps
 
-### A free, open collection of **4,028** clean SVG logos for apps, tools & tech brands.
+### A free, open collection of **5,933** clean SVG logos for apps, tools & tech brands.
 
 <p>
-  <img alt="Logos" src="https://img.shields.io/badge/logos-4028-6366f1?style=for-the-badge" />
+  <img alt="Logos" src="https://img.shields.io/badge/logos-5933-6366f1?style=for-the-badge" />
   <img alt="Format" src="https://img.shields.io/badge/format-SVG-f59e0b?style=for-the-badge" />
   <img alt="Price" src="https://img.shields.io/badge/price-free-22c55e?style=for-the-badge" />
 </p>
@@ -50,19 +50,19 @@ Every logo, organized by category — open a category to see its full table:
 - [🤖 AI & Machine Learning](./categories/ai.md) — **116**
 - [💻 Languages & Runtimes](./categories/lang.md) — **86**
 - [⚛️ Frameworks & UI Libraries](./categories/fw.md) — **403**
-- [🛠️ Dev Tools, CI/CD & Testing](./categories/dev.md) — **583**
-- [☁️ Cloud, Hosting & Infrastructure](./categories/cloud.md) — **268**
-- [🗄️ Databases & Data](./categories/db.md) — **183**
+- [🛠️ Dev Tools, CI/CD & Testing](./categories/dev.md) — **645**
+- [☁️ Cloud, Hosting & Infrastructure](./categories/cloud.md) — **320**
+- [🗄️ Databases & Data](./categories/db.md) — **188**
 - [🎨 Design & Creative](./categories/design.md) — **80**
-- [💬 Social & Communication](./categories/social.md) — **119**
-- [💳 Payments, Fintech & Crypto](./categories/pay.md) — **133**
-- [📋 Productivity & Collaboration](./categories/prod.md) — **218**
-- [🛒 E-commerce & CMS](./categories/shop.md) — **92**
-- [🎵 Media & Entertainment](./categories/media.md) — **88**
+- [💬 Social & Communication](./categories/social.md) — **129**
+- [💳 Payments, Fintech & Crypto](./categories/pay.md) — **143**
+- [📋 Productivity & Collaboration](./categories/prod.md) — **1817**
+- [🛒 E-commerce & CMS](./categories/shop.md) — **98**
+- [🎵 Media & Entertainment](./categories/media.md) — **182**
 - [🖥️ OS, Platforms & Browsers](./categories/os.md) — **79**
-- [📊 Analytics, Marketing & CRM](./categories/mkt.md) — **145**
-- [🔐 Security & Identity](./categories/sec.md) — **71**
-- [🌐 Web Standards & Protocols](./categories/web.md) — **62**
+- [📊 Analytics, Marketing & CRM](./categories/mkt.md) — **167**
+- [🔐 Security & Identity](./categories/sec.md) — **99**
+- [🌐 Web Standards & Protocols](./categories/web.md) — **79**
 - [🏢 Companies & Services](./categories/corp.md) — **1261**
 - [📦 Others](./categories/other.md) — **41**
 
