@@ -2,10 +2,10 @@
 
 # 🎨 Logos Apps
 
-### A free, open collection of **15,071** clean SVG logos for apps, tools & tech brands.
+### A free, open collection of **15,093** clean SVG logos for apps, tools & tech brands.
 
 <p>
-  <img alt="Logos" src="https://img.shields.io/badge/logos-15071-6366f1?style=for-the-badge" />
+  <img alt="Logos" src="https://img.shields.io/badge/logos-15093-6366f1?style=for-the-badge" />
   <img alt="Format" src="https://img.shields.io/badge/format-SVG-f59e0b?style=for-the-badge" />
   <img alt="Price" src="https://img.shields.io/badge/price-free-22c55e?style=for-the-badge" />
 </p>
@@ -55,7 +55,7 @@ Every logo, organized by category — open a category to see its full table:
 - [🗄️ Databases & Data](./categories/db.md) — **276**
 - [🎨 Design & Creative](./categories/design.md) — **88**
 - [💬 Social & Communication](./categories/social.md) — **153**
-- [💳 Payments, Fintech & Crypto](./categories/pay.md) — **2429**
+- [💳 Payments, Fintech & Crypto](./categories/pay.md) — **2428**
 - [📋 Productivity & Collaboration](./categories/prod.md) — **2994**
 - [🛒 E-commerce & CMS](./categories/shop.md) — **102**
 - [🎵 Media & Entertainment](./categories/media.md) — **127**
@@ -65,7 +65,7 @@ Every logo, organized by category — open a category to see its full table:
 - [🌐 Web Standards & Protocols](./categories/web.md) — **71**
 - [🏢 Companies & Services](./categories/corp.md) — **5675**
 - [🏳️ Flags & Nations](./categories/flags.md) — **248**
-- [🏆 Sport & Competitions](./categories/sport.md) — **23**
+- [🏆 Sport & Competitions](./categories/sport.md) — **46**
 - [📦 Others](./categories/other.md) — **41**
 
 > ⚠️ Categories are auto-generated — spotted a logo in the wrong place? PRs welcome!
