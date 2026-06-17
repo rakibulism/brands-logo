@@ -14,12 +14,12 @@
   <a href="https://github.com/rakibulism/brands-logo/archive/refs/heads/master.zip">
     <img alt="Download all" src="https://img.shields.io/badge/⬇️_Download_all_logos-.zip-111827?style=for-the-badge" />
   </a>
-  <a href="https://rakibulism.github.io/brands-logo/">
+  <a href="https://brandslogo.vercel.app/">
     <img alt="Browse the gallery" src="https://img.shields.io/badge/🖼️_Browse_&_download_1--click-website-3b82f6?style=for-the-badge" />
   </a>
 </p>
 
-**[🖼️ Open the interactive gallery](https://rakibulism.github.io/brands-logo/)** — search, filter by category, and download any logo in one click.
+**[🖼️ Open the interactive gallery](https://brandslogo.vercel.app/)** — search, filter by category, and download any logo in one click.
 
 </div>
 
@@ -37,7 +37,7 @@
 
 **Naming convention:** `brand.svg` = icon only · `brand-wordmark.svg` = logotype (icon + name).
 
-> 💡 In the category tables, **click any icon** to open its file — then use GitHub's download button, or visit the [gallery](https://rakibulism.github.io/brands-logo/) for true 1-click downloads.
+> 💡 In the category tables, **click any icon** to open its file — then use GitHub's download button, or visit the [gallery](https://brandslogo.vercel.app/) for true 1-click downloads.
 
 ---
 

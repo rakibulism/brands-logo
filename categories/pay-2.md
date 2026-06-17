@@ -1,6 +1,6 @@
 # 💳 Payments, Fintech & Crypto <sub>(2428)</sub>
 
-[⬅️ Back to the full catalog](../README.md) · [🖼️ Browse & download on the website](https://rakibulism.github.io/brands-logo/)
+[⬅️ Back to the full catalog](../README.md) · [🖼️ Browse & download on the website](https://brandslogo.vercel.app/)
 
 Page [1](./pay.md) · **2**
 

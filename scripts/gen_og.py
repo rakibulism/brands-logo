@@ -60,7 +60,7 @@ d.text((110, 258), f"{TOTAL:,} free SVG logos,", font=f_title, fill=FG)
 d.text((110, 316), "ready to drop in.", font=f_title, fill=FG)
 d.text((110, 412), "Search, filter by category,", font=f_sub, fill=MUTED)
 d.text((110, 448), "download or copy in one click.", font=f_sub, fill=MUTED)
-d.text((110, 525), "rakibulism.github.io/brands-logo", font=ImageFont.truetype(bold, 26), fill=MUTED)
+d.text((110, 525), "brandslogo.vercel.app", font=ImageFont.truetype(bold, 26), fill=MUTED)
 
 # row of real logos on the right
 logos = ["react", "figma", "vue", "slack", "firebase", "tailwindcss", "chrome", "spotify", "notion"]

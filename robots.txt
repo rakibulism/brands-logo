@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://rakibulism.github.io/brands-logo/assets/sitemap.xml
+Sitemap: https://brandslogo.vercel.app/assets/sitemap.xml

@@ -5,7 +5,7 @@ import os, json, html
 import os as _os
 SRC = _os.path.dirname(_os.path.dirname(_os.path.abspath(__file__)))
 REPO = "rakibulism/brands-logo"
-PAGES_URL = "https://rakibulism.github.io/brands-logo/"
+PAGES_URL = "https://brandslogo.vercel.app/"
 ZIP_URL = f"https://github.com/{REPO}/archive/refs/heads/master.zip"
 
 CATS = [
