@@ -54,7 +54,7 @@
 <script>
 (function () {
   var t = localStorage.getItem("theme");
-  if (t === "dark" || (!t && matchMedia("(prefers-color-scheme: dark)").matches)) {
+  if (t === "dark" || (t !== "light" && matchMedia("(prefers-color-scheme: dark)").matches)) {
     document.documentElement.classList.add("dark");
   }
 })();
@@ -84,9 +84,10 @@
   --ring: oklch(0.556 0 0);
 }
 * { box-sizing: border-box; margin: 0; padding: 0; border-color: var(--border); }
-html { font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif; }
-body { background: var(--background); color: var(--foreground); -webkit-font-smoothing: antialiased; }
-button { font: inherit; color: inherit; background: none; border: 0; cursor: pointer; }
+html { font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif; -webkit-text-size-adjust: 100%; }
+body { background: var(--background); color: var(--foreground); -webkit-font-smoothing: antialiased; overflow-x: hidden; }
+button { font: inherit; color: inherit; background: none; border: 0; cursor: pointer; -webkit-tap-highlight-color: transparent; }
+@media (hover: none) { a, button { -webkit-tap-highlight-color: transparent; } }
 a { color: inherit; text-decoration: none; }
 input { font: inherit; color: inherit; }
 svg.icon { width: 1em; height: 1em; flex: none; }
@@ -115,21 +116,13 @@ svg.icon { width: 1em; height: 1em; flex: none; }
 .nav-link .icon { width: 0.75rem; height: 0.75rem; transform: translateY(-1px); transition: transform .15s; }
 .nav-link:hover .icon { transform: translate(1px, -3px); }
 @media (min-width: 640px) { .nav-link { display: inline-flex; } }
-.btn-primary { display: inline-flex; align-items: center; gap: 0.375rem; height: 2.25rem; padding-inline: 1rem;
-  border-radius: 9999px; background: var(--primary); color: var(--primary-foreground); font-size: 0.875rem; font-weight: 500; transition: opacity .15s; }
-.btn-primary:hover { opacity: .9; }
-.btn-primary .icon { width: 0.875rem; height: 0.875rem; }
-.btn-primary span { display: none; }
-@media (min-width: 640px) { .btn-primary span { display: inline; } }
-
-/* sponsor button (header) */
-.btn-sponsor { display: inline-flex; align-items: center; gap: 0.375rem; height: 2.25rem; padding-inline: 0.75rem;
-  border-radius: 9999px; border: 1px solid var(--border); background: var(--background); font-size: 0.875rem; font-weight: 500;
-  transition: background .15s, border-color .15s; }
-.btn-sponsor .icon { width: 0.875rem; height: 0.875rem; color: #f59e0b; }
-.btn-sponsor:hover { background: var(--muted); }
-.btn-sponsor span { display: none; }
-@media (min-width: 640px) { .btn-sponsor span { display: inline; } .btn-sponsor { padding-inline: 1rem; } }
+/* unified header icon buttons (github, theme, bell) */
+.hbtn { position: relative; display: inline-flex; align-items: center; justify-content: center; width: 2.25rem; height: 2.25rem;
+  border-radius: 9999px; border: 1px solid var(--border); background: var(--background); color: var(--foreground); flex: none;
+  cursor: pointer; transition: background .15s, border-color .15s; }
+.hbtn:hover { background: var(--muted); }
+.hbtn .icon { width: 1rem; height: 1rem; }
+@media (pointer: coarse) { .hbtn, .notif-bell { width: 2.5rem; height: 2.5rem; } }
 
 /* primary nav */
 .main-nav { display: none; align-items: center; gap: 0.25rem; margin-left: 0.5rem; }
@@ -214,11 +207,24 @@ svg.icon { width: 1em; height: 1em; flex: none; }
 .modal-foot { margin-top: 0.75rem; text-align: center; font-size: 0.75rem; color: var(--muted-foreground); }
 
 /* theme toggle (pill, sun/moon) */
-.theme-toggle { display: inline-flex; align-items: center; gap: 0.25rem; width: fit-content; border-radius: 9999px;
-  border: 1px solid var(--border); background: var(--background); padding: 0.125rem; color: var(--muted-foreground); }
-.theme-toggle span { display: grid; width: 1.5rem; height: 1.5rem; place-items: center; border-radius: 9999px; transition: background .15s, color .15s; }
-.theme-toggle span .icon { width: 0.875rem; height: 0.875rem; }
-html:not(.dark) .theme-toggle .seg-light, .dark .theme-toggle .seg-dark { background: var(--muted); color: var(--foreground); }
+/* theme menu (icon button + dropdown) */
+.theme-menu { position: relative; }
+#themeBtn .ti { display: none; }
+#themeBtn[data-mode="light"] .ti-light,
+#themeBtn[data-mode="dark"] .ti-dark,
+#themeBtn[data-mode="system"] .ti-system { display: inline-flex; }
+.theme-pop { position: absolute; top: calc(100% + 0.5rem); right: 0; min-width: 10rem; z-index: 80; padding: 0.3rem;
+  background: var(--background); border: 1px solid var(--border); border-radius: calc(var(--radius) * 1.05);
+  box-shadow: 0 12px 32px rgba(0,0,0,.16); display: flex; flex-direction: column; gap: 0.1rem; }
+.theme-pop button { display: flex; align-items: center; gap: 0.55rem; width: 100%; padding: 0.5rem 0.6rem; border: none;
+  border-radius: calc(var(--radius) * 0.8); font-size: 0.875rem; color: var(--foreground); background: none; cursor: pointer; text-align: left; }
+.theme-pop button:hover { background: var(--muted); }
+.theme-pop button .icon { width: 1rem; height: 1rem; color: var(--muted-foreground); flex: none; }
+.theme-pop button span { flex: 1; }
+.theme-pop button .check { width: 0.9rem; height: 0.9rem; color: var(--foreground); opacity: 0; flex: none; }
+.theme-pop button.active { font-weight: 500; }
+.theme-pop button.active .icon { color: var(--foreground); }
+.theme-pop button.active .check { opacity: 1; }
 
 /* ---------- hero ---------- */
 .hero { position: relative; isolation: isolate; overflow: hidden; border-bottom: 1px solid var(--border); }
@@ -539,18 +545,33 @@ html:not(.dark) .theme-toggle .seg-light, .dark .theme-toggle .seg-dark { backgr
           <div class="notif-list" id="notifList"></div>
         </div>
       </div>
-      <button class="btn-sponsor" id="sponsorOpen" type="button" aria-haspopup="dialog">
-        <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11.562 3.266a.5.5 0 0 1 .876 0L15.39 8.87a1 1 0 0 0 1.516.294L21.183 5.5a.5.5 0 0 1 .798.519l-2.834 10.246a1 1 0 0 1-.956.735H5.81a1 1 0 0 1-.957-.735L2.02 6.02a.5.5 0 0 1 .798-.519l4.276 3.664a1 1 0 0 0 1.516-.294z"/></svg>
-        <span>Sponsor</span>
-      </button>
-      <a class="btn-primary" href="https://github.com/__REPO__" target="_blank" rel="noreferrer">
+      <a class="hbtn" href="https://github.com/__REPO__" target="_blank" rel="noreferrer" aria-label="GitHub repository">
         <svg class="icon" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path fill-rule="evenodd" clip-rule="evenodd" d="M12 2C6.475 2 2 6.475 2 12a9.994 9.994 0 0 0 6.838 9.488c.5.087.687-.213.687-.475 0-.237-.013-1.024-.013-1.862-2.512.463-3.162-.612-3.362-1.175-.113-.288-.6-1.175-1.025-1.413-.35-.187-.85-.65-.013-.662.788-.013 1.35.725 1.538 1.025.9 1.512 2.337 1.087 2.912.825.088-.65.35-1.087.638-1.337-2.225-.25-4.55-1.113-4.55-4.938 0-1.088.387-1.987 1.025-2.687-.1-.25-.45-1.275.1-2.65 0 0 .837-.262 2.75 1.025a9.282 9.282 0 0 1 2.5-.337c.85 0 1.7.112 2.5.337 1.912-1.3 2.75-1.025 2.75-1.025.55 1.375.2 2.4.1 2.65.637.7 1.025 1.587 1.025 2.687 0 3.838-2.337 4.688-4.562 4.938.362.312.675.912.675 1.85 0 1.337-.013 2.412-.013 2.75 0 .262.188.574.688.474A10.016 10.016 0 0 0 22 12c0-5.525-4.475-10-10-10z"/></svg>
-        <span>GitHub</span>
       </a>
-      <button class="theme-toggle" id="themeToggle" type="button" aria-label="Toggle theme">
-        <span class="seg-light"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2"/><path d="M12 20v2"/><path d="m4.93 4.93 1.41 1.41"/><path d="m17.66 17.66 1.41 1.41"/><path d="M2 12h2"/><path d="M20 12h2"/><path d="m6.34 17.66-1.41 1.41"/><path d="m19.07 4.93-1.41 1.41"/></svg></span>
-        <span class="seg-dark"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/></svg></span>
-      </button>
+      <div class="theme-menu">
+        <button class="hbtn" id="themeBtn" type="button" aria-haspopup="true" aria-label="Change theme" data-mode="system">
+          <svg class="icon ti ti-light" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/></svg>
+          <svg class="icon ti ti-dark" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/></svg>
+          <svg class="icon ti ti-system" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg>
+        </button>
+        <div class="theme-pop" id="themePop" hidden role="menu">
+          <button data-theme="light" type="button" role="menuitemradio">
+            <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/></svg>
+            <span>Light</span>
+            <svg class="check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
+          </button>
+          <button data-theme="dark" type="button" role="menuitemradio">
+            <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/></svg>
+            <span>Dark</span>
+            <svg class="check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
+          </button>
+          <button data-theme="system" type="button" role="menuitemradio">
+            <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg>
+            <span>Device</span>
+            <svg class="check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
+          </button>
+        </div>
+      </div>
     </div>
   </div>
 </header>
@@ -729,10 +750,6 @@ html:not(.dark) .theme-toggle .seg-light, .dark .theme-toggle .seg-dark { backgr
           </a>
         </div>
         <p class="tagline">__TOTAL__ free SVG logos for apps, dev tools and tech brands. Search, filter, grab.</p>
-        <button class="theme-toggle" id="themeToggleFooter" type="button" aria-label="Toggle theme">
-          <span class="seg-light"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2"/><path d="M12 20v2"/><path d="m4.93 4.93 1.41 1.41"/><path d="m17.66 17.66 1.41 1.41"/><path d="M2 12h2"/><path d="M20 12h2"/><path d="m6.34 17.66-1.41 1.41"/><path d="m19.07 4.93-1.41 1.41"/></svg></span>
-          <span class="seg-dark"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/></svg></span>
-        </button>
       </div>
       <div class="footer-cols">
         <div class="footer-col">
@@ -1259,7 +1276,8 @@ function closeSponsorModal() {
   document.documentElement.style.overflow = "";
   setModalParam(false);
 }
-document.getElementById("sponsorOpen").onclick = openSponsorModal;
+var _sponsorOpenBtn = document.getElementById("sponsorOpen");
+if (_sponsorOpenBtn) _sponsorOpenBtn.onclick = openSponsorModal;
 document.getElementById("sponsorOverlay").onclick = closeSponsorModal;
 document.getElementById("sponsorClose").onclick = closeSponsorModal;
 
@@ -1297,13 +1315,30 @@ const perPageEl = document.getElementById("perPage");
 perPageEl.value = String(state.perPage);
 perPageEl.onchange = () => { state.perPage = parseInt(perPageEl.value, 10); state.page = 1; update(); };
 
-/* ---------- theme ---------- */
-function toggleTheme() {
-  const dark = document.documentElement.classList.toggle("dark");
-  localStorage.setItem("theme", dark ? "dark" : "light");
-}
-document.getElementById("themeToggle").onclick = toggleTheme;
-document.getElementById("themeToggleFooter").onclick = toggleTheme;
+/* ---------- theme (light / dark / device) ---------- */
+(function () {
+  const btn = document.getElementById("themeBtn");
+  const pop = document.getElementById("themePop");
+  if (!btn) return;
+  const mql = matchMedia("(prefers-color-scheme: dark)");
+  const current = () => localStorage.getItem("theme") || "system";
+  function apply() {
+    const mode = current();
+    const dark = mode === "dark" || (mode === "system" && mql.matches);
+    document.documentElement.classList.toggle("dark", dark);
+    btn.setAttribute("data-mode", mode);
+    pop.querySelectorAll("button").forEach(b => b.classList.toggle("active", b.getAttribute("data-theme") === mode));
+  }
+  btn.addEventListener("click", e => { e.stopPropagation(); pop.hidden = !pop.hidden; });
+  pop.addEventListener("click", e => {
+    const b = e.target.closest("button"); if (!b) return;
+    localStorage.setItem("theme", b.getAttribute("data-theme")); apply(); pop.hidden = true;
+  });
+  document.addEventListener("click", e => { if (!pop.hidden && !pop.contains(e.target) && !btn.contains(e.target)) pop.hidden = true; });
+  document.addEventListener("keydown", e => { if (e.key === "Escape") pop.hidden = true; });
+  mql.addEventListener("change", () => { if (current() === "system") apply(); });
+  apply();
+})();
 
 document.getElementById("year").textContent = new Date().getFullYear();
 update();

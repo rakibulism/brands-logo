@@ -10,7 +10,7 @@
 <script>
   (function () {
     var t = localStorage.getItem("theme");
-    if (t === "dark" || (!t && matchMedia("(prefers-color-scheme: dark)").matches)) document.documentElement.classList.add("dark");
+    if (t === "dark" || (t !== "light" && matchMedia("(prefers-color-scheme: dark)").matches)) document.documentElement.classList.add("dark");
   })();
 </script>
 <style>
@@ -44,10 +44,22 @@
   .btn-figma svg { width: 0.95rem; height: 1.05rem; }
   .btn-figma span { display: none; }
   @media (min-width: 520px) { .btn-figma span { display: inline; } }
-  .ttoggle { width: 2.25rem; height: 2.25rem; border-radius: 9999px; border: 1px solid var(--border); background: var(--background); cursor: pointer; display: grid; place-items: center; color: var(--foreground); }
-  .ttoggle:hover { background: var(--muted); }
-  .ttoggle svg { width: 1rem; height: 1rem; }
-  :root:not(.dark) .ttoggle .moon, :root.dark .ttoggle .sun { display: none; }
+  .hbtn { position: relative; display: inline-flex; align-items: center; justify-content: center; width: 2.25rem; height: 2.25rem; border-radius: 9999px; border: 1px solid var(--border); background: var(--background); color: var(--foreground); cursor: pointer; }
+  .hbtn:hover { background: var(--muted); }
+  .hbtn svg { width: 1rem; height: 1rem; }
+  @media (pointer: coarse) { .hbtn { width: 2.5rem; height: 2.5rem; } }
+  .theme-menu { position: relative; }
+  #themeBtn .ti { display: none; }
+  #themeBtn[data-mode="light"] .ti-light, #themeBtn[data-mode="dark"] .ti-dark, #themeBtn[data-mode="system"] .ti-system { display: inline-flex; }
+  .theme-pop { position: absolute; top: calc(100% + 0.5rem); right: 0; min-width: 10rem; z-index: 80; padding: 0.3rem; background: var(--background); border: 1px solid var(--border); border-radius: 0.7rem; box-shadow: 0 12px 32px rgba(0,0,0,.16); display: flex; flex-direction: column; gap: 0.1rem; }
+  .theme-pop button { display: flex; align-items: center; gap: 0.55rem; width: 100%; padding: 0.5rem 0.6rem; border: none; border-radius: 0.5rem; font-size: 0.875rem; color: var(--foreground); background: none; cursor: pointer; text-align: left; }
+  .theme-pop button:hover { background: var(--muted); }
+  .theme-pop button svg.opt { width: 1rem; height: 1rem; color: var(--muted-foreground); flex: none; }
+  .theme-pop button span { flex: 1; }
+  .theme-pop button svg.check { width: 0.9rem; height: 0.9rem; opacity: 0; flex: none; }
+  .theme-pop button.active { font-weight: 500; }
+  .theme-pop button.active svg.opt { color: var(--foreground); }
+  .theme-pop button.active svg.check { opacity: 1; }
 
   main { padding: 2.5rem 0 4rem; }
   h1 { font-size: 2rem; letter-spacing: -0.02em; margin: 0 0 0.5rem; }
@@ -90,10 +102,21 @@
         <svg viewBox="0 0 24 24" fill="none"><path d="M8.5 3h3.5v6H8.5a3 3 0 0 1 0-6Z" fill="#f24e1e"/><path d="M12 3h3.5a3 3 0 0 1 0 6H12V3Z" fill="#ff7262"/><path d="M8.5 9H12v6H8.5a3 3 0 0 1 0-6Z" fill="#a259ff"/><path d="M12 12a3 3 0 1 1 3.5 2.955A3 3 0 0 1 12 12Z" fill="#1abcfe"/><path d="M8.5 15H12v3a3 3 0 1 1-3.5-3Z" fill="#0acf83"/></svg>
         <span>Install in Figma</span>
       </a>
-      <button class="ttoggle" id="ttoggle" aria-label="Toggle theme">
-        <svg class="sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/></svg>
-        <svg class="moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/></svg>
-      </button>
+      <a class="hbtn" href="https://github.com/rakibulism/brands-logo" target="_blank" rel="noreferrer" aria-label="GitHub repository">
+        <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path fill-rule="evenodd" clip-rule="evenodd" d="M12 2C6.475 2 2 6.475 2 12a9.994 9.994 0 0 0 6.838 9.488c.5.087.687-.213.687-.475 0-.237-.013-1.024-.013-1.862-2.512.463-3.162-.612-3.362-1.175-.113-.288-.6-1.175-1.025-1.413-.35-.187-.85-.65-.013-.662.788-.013 1.35.725 1.538 1.025.9 1.512 2.337 1.087 2.912.825.088-.65.35-1.087.638-1.337-2.225-.25-4.55-1.113-4.55-4.938 0-1.088.387-1.987 1.025-2.687-.1-.25-.45-1.275.1-2.65 0 0 .837-.262 2.75 1.025a9.282 9.282 0 0 1 2.5-.337c.85 0 1.7.112 2.5.337 1.912-1.3 2.75-1.025 2.75-1.025.55 1.375.2 2.4.1 2.65.637.7 1.025 1.587 1.025 2.687 0 3.838-2.337 4.688-4.562 4.938.362.312.675.912.675 1.85 0 1.337-.013 2.412-.013 2.75 0 .262.188.574.688.474A10.016 10.016 0 0 0 22 12c0-5.525-4.475-10-10-10z"/></svg>
+      </a>
+      <div class="theme-menu">
+        <button class="hbtn" id="themeBtn" type="button" aria-haspopup="true" aria-label="Change theme" data-mode="system">
+          <svg class="ti ti-light" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/></svg>
+          <svg class="ti ti-dark" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/></svg>
+          <svg class="ti ti-system" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg>
+        </button>
+        <div class="theme-pop" id="themePop" hidden role="menu">
+          <button data-theme="light" type="button"><svg class="opt" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/></svg><span>Light</span><svg class="check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></button>
+          <button data-theme="dark" type="button"><svg class="opt" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/></svg><span>Dark</span><svg class="check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></button>
+          <button data-theme="system" type="button"><svg class="opt" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg><span>Device</span><svg class="check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></button>
+        </div>
+      </div>
     </div>
   </div>
 </header>
@@ -113,10 +136,23 @@
 </footer>
 
 <script>
-  document.getElementById("ttoggle").onclick = function () {
-    var dark = document.documentElement.classList.toggle("dark");
-    localStorage.setItem("theme", dark ? "dark" : "light");
-  };
+  (function () {
+    var btn = document.getElementById("themeBtn"), pop = document.getElementById("themePop");
+    var mql = matchMedia("(prefers-color-scheme: dark)");
+    function current() { return localStorage.getItem("theme") || "system"; }
+    function apply() {
+      var m = current(), dark = m === "dark" || (m === "system" && mql.matches);
+      document.documentElement.classList.toggle("dark", dark);
+      btn.setAttribute("data-mode", m);
+      [].forEach.call(pop.querySelectorAll("button"), function (b) { b.classList.toggle("active", b.getAttribute("data-theme") === m); });
+    }
+    btn.addEventListener("click", function (e) { e.stopPropagation(); pop.hidden = !pop.hidden; });
+    pop.addEventListener("click", function (e) { var b = e.target.closest("button"); if (!b) return; localStorage.setItem("theme", b.getAttribute("data-theme")); apply(); pop.hidden = true; });
+    document.addEventListener("click", function (e) { if (!pop.hidden && !pop.contains(e.target) && !btn.contains(e.target)) pop.hidden = true; });
+    document.addEventListener("keydown", function (e) { if (e.key === "Escape") pop.hidden = true; });
+    mql.addEventListener("change", function () { if (current() === "system") apply(); });
+    apply();
+  })();
   document.getElementById("year").textContent = new Date().getFullYear();
 
   function esc(s) { return String(s == null ? "" : s).replace(/[&<>"]/g, function (c) { return ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" })[c]; }); }
