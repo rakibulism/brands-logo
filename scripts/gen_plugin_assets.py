@@ -490,6 +490,54 @@ def og():
     print("   assets/og.png", os.path.getsize(os.path.join(ROOT, "assets", "og.png")) // 1024, "KB")
 
 
+# =========================================================
+#  App / plugin icons (the 2×2 brand mark)
+# =========================================================
+def make_icon(path, size, bg=(10, 10, 12), fg=(250, 250, 250), mark_ratio=0.54, transparent_rgb=True):
+    img = Image.new("RGBA", (size, size), (0, 0, 0, 0))
+    d = ImageDraw.Draw(img, "RGBA")
+    if bg is not None:
+        d.rectangle([0, 0, size, size], fill=bg)          # flat square, no corner radius
+    total = size * mark_ratio
+    gap = total * 0.16
+    cell = (total - gap) / 2
+    x0 = (size - total) / 2
+    y0 = (size - total) / 2
+    rad = max(2, cell * 0.22)
+    wdt = max(3, int(round(cell * 0.16)))
+    rrect(d, [x0, y0, x0 + cell, y0 + cell], rad, outline=fg, width=wdt)
+    rrect(d, [x0 + cell + gap, y0, x0 + 2 * cell + gap, y0 + cell], rad, outline=fg, width=wdt)
+    rrect(d, [x0, y0 + cell + gap, x0 + cell, y0 + 2 * cell + gap], rad, outline=fg, width=wdt)
+    rrect(d, [x0 + cell + gap, y0 + cell + gap, x0 + 2 * cell + gap, y0 + 2 * cell + gap], rad, fill=fg)
+    if bg is None and not transparent_rgb:
+        img.save(path)
+    else:
+        img.convert("RGB").save(path, optimize=True)
+    print("  ", os.path.relpath(path, ROOT), os.path.getsize(path) // 1024, "KB")
+
+
+def icons():
+    A = os.path.join(ROOT, "assets")
+    make_icon(os.path.join(A, "icon-192.png"), 192, mark_ratio=0.52)
+    make_icon(os.path.join(A, "icon-512.png"), 512, mark_ratio=0.52)
+    # Figma plugin icon — 124×124, flat (no corner radius)
+    make_icon(os.path.join(OUT, "plugin-icon-124.png"), 124, mark_ratio=0.56)
+
+
+def walkthrough_gif():
+    """1920x1080 looping trailer from the carousel slides (ffmpeg-free)."""
+    slides = [Image.open(os.path.join(OUT, "carousel-%d.png" % i)).convert("RGB") for i in range(1, 10)]
+    # shared adaptive palette so frames don't each carry their own (smaller + no flicker)
+    sample = Image.new("RGB", (slides[0].width, slides[0].height * len(slides)))
+    for i, s in enumerate(slides):
+        sample.paste(s, (0, i * s.height))
+    pal = sample.resize((480, 270 * len(slides))).convert("P", palette=Image.ADAPTIVE, colors=200)
+    pframes = [s.quantize(palette=pal, dither=Image.NONE) for s in slides]
+    out = os.path.join(OUT, "walkthrough.gif")
+    pframes[0].save(out, save_all=True, append_images=pframes[1:], duration=1500, loop=0, optimize=True, disposal=1)
+    print("  ", os.path.relpath(out, ROOT), os.path.getsize(out) // 1024, "KB")
+
+
 if __name__ == "__main__":
     print("Generating Figma Community assets…")
     slide_cover(thumb=True)                      # thumbnail.png
@@ -510,4 +558,6 @@ if __name__ == "__main__":
                   ["Match Figma automatically, plus compact / large", "density and a one-tap settings panel."], vis_themes)
     slide_cta()                                  # carousel-9.png
     og()
+    icons()
+    walkthrough_gif()
     print("Done.")
