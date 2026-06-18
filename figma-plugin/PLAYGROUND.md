@@ -61,9 +61,10 @@ When you publish the plugin (**Plugins → Development → Brands Logo → Publi
 
 | Field | File | Size |
 |-------|------|------|
-| Icon | (make a 128×128 from the brand mark) | 128 × 128 |
+| Icon | `marketing/plugin-icon-124.png` (flat, no corner radius) | 124 × 124 |
 | **Cover / thumbnail** | `marketing/thumbnail.png` | 1920 × 1080 |
 | **Carousel** (up to 9) | `marketing/carousel-1…9.png` | 1920 × 1080 each |
+| **Video** | `marketing/walkthrough.mp4` (H.264, ~15s) | 1920 × 1080 |
 | Playground file | a Figma file using the copy above | — |
 
 **Carousel order** (already built):
@@ -87,8 +88,9 @@ After publishing, replace the placeholder Community URL
 ## Regenerating the images
 
 ```bash
-python3 scripts/gen_plugin_assets.py
+python3 scripts/gen_plugin_assets.py     # thumbnail, carousel, og, icons (Pillow-only)
+python3 scripts/gen_video.py             # walkthrough.mp4 (needs: pip install --user imageio-ffmpeg)
 ```
 
-Pillow-only (no ImageMagick needed). Real logos come from the pre-rasterized tiles in
-`marketing/tiles/`; to refresh those, re-run the browser rasterization step.
+Real logos come from the pre-rasterized tiles in `marketing/tiles/`. The MP4 uses the
+ffmpeg binary bundled by `imageio-ffmpeg` — no system ffmpeg required.

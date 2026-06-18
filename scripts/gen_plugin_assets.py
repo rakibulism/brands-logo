@@ -524,20 +524,6 @@ def icons():
     make_icon(os.path.join(OUT, "plugin-icon-124.png"), 124, mark_ratio=0.56)
 
 
-def walkthrough_gif():
-    """1920x1080 looping trailer from the carousel slides (ffmpeg-free)."""
-    slides = [Image.open(os.path.join(OUT, "carousel-%d.png" % i)).convert("RGB") for i in range(1, 10)]
-    # shared adaptive palette so frames don't each carry their own (smaller + no flicker)
-    sample = Image.new("RGB", (slides[0].width, slides[0].height * len(slides)))
-    for i, s in enumerate(slides):
-        sample.paste(s, (0, i * s.height))
-    pal = sample.resize((480, 270 * len(slides))).convert("P", palette=Image.ADAPTIVE, colors=200)
-    pframes = [s.quantize(palette=pal, dither=Image.NONE) for s in slides]
-    out = os.path.join(OUT, "walkthrough.gif")
-    pframes[0].save(out, save_all=True, append_images=pframes[1:], duration=1500, loop=0, optimize=True, disposal=1)
-    print("  ", os.path.relpath(out, ROOT), os.path.getsize(out) // 1024, "KB")
-
-
 if __name__ == "__main__":
     print("Generating Figma Community assets…")
     slide_cover(thumb=True)                      # thumbnail.png
@@ -559,5 +545,5 @@ if __name__ == "__main__":
     slide_cta()                                  # carousel-9.png
     og()
     icons()
-    walkthrough_gif()
+    # walkthrough video (MP4) is rendered separately: python3 scripts/gen_video.py
     print("Done.")

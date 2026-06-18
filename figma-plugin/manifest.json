@@ -8,5 +8,6 @@
   "networkAccess": {
     "allowedDomains": ["https://raw.githubusercontent.com", "https://api.svgl.app", "https://svgl.app"],
     "reasoning": "Fetches the logo manifest (assets/logos.json) and SVG logos from the brands-logo GitHub repository, plus the optional svgl.app library (api.svgl.app + svgl.app) as a second source."
-  }
+  },
+  "documentAccess": "dynamic-page"
 }
