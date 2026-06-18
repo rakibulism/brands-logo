@@ -2,7 +2,9 @@ name: Sync logos from upstream
 
 # Keeps this repo's logos (and assets/logos.json) up to date with the upstream
 # collection automatically, so the Figma plugin + website always have the latest —
-# no manual work. Runs weekly, and can be triggered by hand from the Actions tab.
+# no manual work. Runs daily, and can be triggered by hand from the Actions tab.
+# When new logos arrive it also drops a note into assets/updates.json so the
+# website bell, the Updates page and the Figma plugin all show what changed.
 
 on:
   schedule:
@@ -33,6 +35,19 @@ jobs:
 
       - name: Regenerate README, categories, index.html + assets/logos.json
         run: python3 scripts/gen_site.py
+
+      - name: Note new logos in the updates feed (bell + plugin)
+        run: |
+          git add -A
+          ADDED=$(git diff --cached --name-only --diff-filter=A -- logos/ | wc -l | tr -d ' ')
+          UPDATED=$(git diff --cached --name-only --diff-filter=M -- logos/ | wc -l | tr -d ' ')
+          REMOVED=$(git diff --cached --name-only --diff-filter=D -- logos/ | wc -l | tr -d ' ')
+          if [ "$ADDED" != "0" ] || [ "$UPDATED" != "0" ] || [ "$REMOVED" != "0" ]; then
+            NAMES=$(git diff --cached --name-only --diff-filter=A -- logos/ | head -6 | sed 's#.*/##; s#\.svg$##' | paste -sd, -)
+            python3 scripts/log_sync.py --added "$ADDED" --updated "$UPDATED" --removed "$REMOVED" --names "$NAMES" --date "$(date -u +%F)"
+          else
+            echo "No logo files changed — skipping updates note."
+          fi
 
       - name: Commit & push if anything changed
         run: |

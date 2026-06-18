@@ -254,7 +254,9 @@
           '<div class="body">' + esc(e.body || "") + '</div></div>';
       }).join("");
       // mark these as seen so the home-page bell dot clears
-      if (entries[0].date) localStorage.setItem("logos_updates_seen", entries[0].date);
+      var top = entries[0];
+      var topId = top.id || ((top.date || "") + "|" + (top.title || ""));
+      localStorage.setItem("logos_updates_seen", topId);
     })
     .catch(function () { document.getElementById("timeline").innerHTML = '<div class="state">Couldn\'t load updates.</div>'; });
 </script>

@@ -1681,6 +1681,7 @@ update();
   if (!bell) return;
   const SEEN_KEY = "logos_updates_seen";
   const tagClass = t => (["new", "improved", "fixed"].includes(t) ? t : "new");
+  const idOf = e => e.id || ((e.date || "") + "|" + (e.title || ""));
 
   fetch("assets/updates.json", { cache: "no-cache" })
     .then(r => r.json())
@@ -1696,7 +1697,7 @@ update();
           </div>
           <div class="it-body">${esc(e.body || "")}</div>
         </div>`).join("");
-      const latest = entries[0].date || "";
+      const latest = idOf(entries[0]);
       if (localStorage.getItem(SEEN_KEY) !== latest) dot.hidden = false;
       bell._latest = latest;
     })

@@ -42,6 +42,22 @@
 
   .iconbtn { width: 32px; height: 32px; border-radius: var(--radius); border: 1px solid var(--border); background: var(--panel); display: flex; align-items: center; justify-content: center; color: var(--text); flex: none; }
   .iconbtn:hover { background: var(--hover); }
+  .iconbtn.notif { position: relative; }
+  .iconbtn .dot { position: absolute; top: 5px; right: 5px; width: 7px; height: 7px; border-radius: 50%; background: #ef4444; border: 1.5px solid var(--panel); }
+
+  /* ---------- notifications panel ---------- */
+  .notiflist { max-height: 320px; overflow-y: auto; margin: 0 -4px; }
+  .ni { padding: 9px 6px; border-bottom: 1px solid var(--border); }
+  .ni:last-child { border-bottom: none; }
+  .ni-top { display: flex; align-items: center; gap: 6px; margin-bottom: 3px; }
+  .ni-tag { font-size: 9px; font-weight: 600; text-transform: uppercase; letter-spacing: .03em; padding: 1px 6px; border-radius: 999px; flex: none; }
+  .ni-tag.new { background: rgba(34,197,94,.16); color: #16a34a; }
+  .ni-tag.improved { background: rgba(59,130,246,.16); color: #2563eb; }
+  .ni-tag.fixed { background: rgba(245,158,11,.18); color: #d97706; }
+  .ni-title { font-weight: 600; font-size: 12px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .ni-date { margin-left: auto; font-size: 10px; color: var(--muted); flex: none; }
+  .ni-body { font-size: 11px; color: var(--muted); line-height: 1.4; }
+  .menu-foot a { color: var(--accent); text-decoration: none; }
 
   .row2 { margin-top: 6px; gap: 6px; }
   .sources { display: flex; gap: 4px; margin-bottom: 8px; }
@@ -126,6 +142,10 @@
           <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12"/></svg>
         </button>
       </div>
+      <button class="iconbtn notif" id="openNotif" title="What's new" aria-label="What's new">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+        <span class="dot" id="notifDot" hidden></span>
+      </button>
       <button class="iconbtn" id="openSettings" title="Settings">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
       </button>
@@ -177,6 +197,16 @@
     <div class="loading" id="state">Loading logos…</div>
     <div class="grid" id="grid"></div>
     <div class="sentinel" id="sentinel"></div>
+  </div>
+
+  <!-- notifications overlay -->
+  <div class="overlay" id="notifOverlay">
+    <div class="sheet">
+      <h3>What's new <button class="x" data-close>
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12"/></svg></button></h3>
+      <div class="notiflist" id="notifList"><div class="hint">Loading…</div></div>
+      <div class="menu-foot"><a id="allUpdates" href="#" target="_blank" rel="noreferrer">All updates →</a></div>
+    </div>
   </div>
 
   <!-- settings overlay -->
@@ -234,14 +264,15 @@
 (function () {
   "use strict";
   var MANIFEST_URL = "https://raw.githubusercontent.com/rakibulism/brands-logo/master/assets/logos.json";
+  var UPDATES_URL = "https://raw.githubusercontent.com/rakibulism/brands-logo/master/assets/updates.json";
   var SVGL_API = "https://api.svgl.app";
   var PAGE = 150;
 
   var state = {
     all: [], rawBase: "", filtered: [], shown: 0,
     q: "", cat: "all", mode: "insert", source: "repo",
-    settings: { theme: "system", density: "default", size: 128 },
-    ratio: 1, lock: true, hasSel: false,
+    settings: { theme: "system", density: "default", size: 128, seenUpdate: "" },
+    ratio: 1, lock: true, hasSel: false, updatesLatest: "",
   };
   var repoData = null, svglData = null;
 
@@ -438,6 +469,39 @@
     setTimeout(function () { d.remove(); }, 1600);
   }
 
+  /* ---------- notifications (what's new) ---------- */
+  function esc(s) {
+    return String(s == null ? "" : s).replace(/[&<>"]/g, function (c) {
+      return ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" })[c];
+    });
+  }
+  function idOf(e) { return e.id || ((e.date || "") + "|" + (e.title || "")); }
+  function updateBellDot() {
+    var dot = $("notifDot");
+    if (!dot) return;
+    dot.hidden = !state.updatesLatest || state.settings.seenUpdate === state.updatesLatest;
+  }
+  function loadUpdates() {
+    fetch(UPDATES_URL, { cache: "no-cache" })
+      .then(function (r) { return r.json(); })
+      .then(function (data) {
+        var entries = (data.entries || []).slice(0, 8);
+        var list = $("notifList");
+        if (!entries.length) { list.innerHTML = '<div class="hint">Nothing new yet.</div>'; return; }
+        list.innerHTML = entries.map(function (e) {
+          var t = ["new", "improved", "fixed"].indexOf(e.tag) >= 0 ? e.tag : "new";
+          return '<div class="ni"><div class="ni-top">' +
+            '<span class="ni-tag ' + t + '">' + esc(e.tag || "new") + '</span>' +
+            '<span class="ni-title">' + esc(e.title) + '</span>' +
+            '<span class="ni-date">' + esc(e.date || "") + '</span></div>' +
+            '<div class="ni-body">' + esc(e.body || "") + '</div></div>';
+        }).join("");
+        state.updatesLatest = idOf(entries[0]);
+        updateBellDot();
+      })
+      .catch(function () { $("notifList").innerHTML = '<div class="hint">Couldn\'t load updates.</div>'; });
+  }
+
   /* ---------- selection strip ---------- */
   function showSelection(info) {
     state.hasSel = !!info.hasSelection;
@@ -490,9 +554,17 @@
 
   /* ---------- overlays ---------- */
   function openOverlay(id) { $(id).classList.add("on"); }
-  function closeOverlays() { $("settingsOverlay").classList.remove("on"); $("menuOverlay").classList.remove("on"); }
+  function closeOverlays() { $("settingsOverlay").classList.remove("on"); $("menuOverlay").classList.remove("on"); $("notifOverlay").classList.remove("on"); }
   $("openSettings").addEventListener("click", function () { openOverlay("settingsOverlay"); });
   $("openMenu").addEventListener("click", function () { openOverlay("menuOverlay"); });
+  $("openNotif").addEventListener("click", function () {
+    openOverlay("notifOverlay");
+    if (state.updatesLatest && state.settings.seenUpdate !== state.updatesLatest) {
+      state.settings.seenUpdate = state.updatesLatest;
+      persist();
+      updateBellDot();
+    }
+  });
   document.querySelectorAll(".overlay").forEach(function (o) {
     o.addEventListener("click", function (e) { if (e.target === o) closeOverlays(); });
   });
@@ -555,6 +627,7 @@
   var SITE = "https://brandslogo.vercel.app/";
   $("siteLink").href = SITE;
   $("siteUrlText").textContent = SITE.replace(/^https?:\/\//, "").replace(/\/$/, "");
+  $("allUpdates").href = SITE + "updates.html";
 
   /* ---------- messages from main thread ---------- */
   window.onmessage = function (event) {
@@ -563,6 +636,7 @@
     if (msg.type === "settings") {
       state.settings = Object.assign(state.settings, msg.settings || {});
       applyAppearance();
+      updateBellDot();
     } else if (msg.type === "selection") {
       showSelection(msg);
     }
@@ -570,6 +644,7 @@
 
   applyAppearance();
   loadRepo();
+  loadUpdates();
   parent.postMessage({ pluginMessage: { type: "ready" } }, "*");
 })();
 </script>

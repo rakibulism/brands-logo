@@ -1,7 +1,7 @@
 // Brands Logo — Figma plugin (main thread)
 // Inserts / replaces / resizes SVG logos fetched by the UI from the repo.
 
-const DEFAULTS = { theme: "system", density: "default", size: 128 };
+const DEFAULTS = { theme: "system", density: "default", size: 128, seenUpdate: "" };
 const DEFAULT_SIZE = 128;   // each logo lives in a square frame of this size
 const PAD = 0.84;           // the SVG occupies this fraction of the square (rest = padding)
 const WRAP_NAME = "wrap by @rakibulism";   // name of the inner SVG wrapper frame
