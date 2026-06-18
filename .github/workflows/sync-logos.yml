@@ -6,7 +6,7 @@ name: Sync logos from upstream
 
 on:
   schedule:
-    - cron: "0 6 * * 1"   # every Monday 06:00 UTC
+    - cron: "0 6 * * *"   # every day 06:00 UTC
   workflow_dispatch: {}    # manual "Run workflow" button
 
 permissions:
@@ -21,7 +21,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout this repo
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
         with:
           fetch-depth: 0
 
@@ -30,11 +30,6 @@ jobs:
           git remote add upstream https://github.com/ln-dev7/logos-apps.git || true
           git fetch --no-tags --depth=1 upstream master
           git checkout upstream/master -- logos/
-
-      - name: Set up Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: "3.x"
 
       - name: Regenerate README, categories, index.html + assets/logos.json
         run: python3 scripts/gen_site.py
