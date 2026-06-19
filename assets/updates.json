@@ -2,8 +2,16 @@
   "version": 1,
   "entries": [
     {
+      "date": "2026-06-19",
+      "tag": "improved",
+      "id": "v1.0.1",
+      "title": "v1.0.1 — one unified library + plugin bell",
+      "body": "Figma plugin: the separate Brands Logo / svgl tabs are gone — all logos now live in one searchable list (the repo's 15,000+ logos merged with svgl's curated icons, deduplicated). Added a notification bell that flags new logos as they sync in daily, with an unread dot."
+    },
+    {
       "date": "2026-06-18",
       "tag": "new",
+      "id": "v1.0.0",
       "title": "v1.0.0 released 🚀",
       "body": "First stable release. Brands Logo ships with 15,000+ SVG logos on the web, a public assets/logos.json manifest, a published Figma plugin (insert, replace-in-place, resize, two libraries), light/dark/device themes, keyboard shortcuts, PWA install, and a daily auto-sync that keeps the collection fresh."
     },
