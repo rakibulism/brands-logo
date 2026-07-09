@@ -166,11 +166,11 @@
 
     <h2 id="api">Logos manifest (API)</h2>
     <p>Every build regenerates <code>assets/logos.json</code> — a single file listing every logo with its category. Build anything on top of it.</p>
-    <pre><code>GET https://raw.githubusercontent.com/rakibulism/brands-logo/master/assets/logos.json
+    <pre><code>GET https://cdn.jsdelivr.net/gh/rakibulism/brands-logo@master/assets/logos.json
 
 {
   "count": 15014,
-  "rawBase": "https://raw.githubusercontent.com/rakibulism/brands-logo/master/logos/",
+  "rawBase": "https://cdn.jsdelivr.net/gh/rakibulism/brands-logo@master/logos/",
   "categories": [ { "key": "ai", "name": "AI & Machine Learning", "count": 142 }, ... ],
   "logos": [ { "n": "react", "c": "fw", "w": false }, ... ]
 }</code></pre>

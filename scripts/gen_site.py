@@ -34,7 +34,7 @@ cats_js = [
 wm = sum(1 for n in gen.files if n.endswith("-wordmark"))
 
 # ---- assets/logos.json manifest (consumed by the Figma plugin + website bell) ----
-RAW_BASE = f"https://raw.githubusercontent.com/{gen.REPO}/master/logos/"
+RAW_BASE = f"https://cdn.jsdelivr.net/gh/{gen.REPO}@master/logos/"
 manifest = {
     "version": 1,
     "repo": gen.REPO,
