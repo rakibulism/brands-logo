@@ -26,6 +26,14 @@
   }
   button { font: inherit; cursor: pointer; border: none; background: none; color: inherit; }
 
+  /* ---------- window resize handle ---------- */
+  .resize-handle {
+    position: fixed; right: 0; bottom: 0; width: 16px; height: 16px;
+    display: flex; align-items: flex-end; justify-content: flex-end; padding: 2px;
+    color: var(--muted); cursor: nwse-resize; z-index: 50; touch-action: none;
+  }
+  .resize-handle:hover { color: var(--text); }
+
   /* ---------- toolbar ---------- */
   .toolbar { padding: 10px 10px 6px; border-bottom: 1px solid var(--border); background: var(--bg); }
   .row { display: flex; gap: 6px; align-items: center; }
@@ -250,6 +258,12 @@
       </div>
       <div class="menu-foot" id="metaFoot"></div>
     </div>
+  </div>
+
+  <div class="resize-handle" id="resizeHandle" title="Drag to resize">
+    <svg width="10" height="10" viewBox="0 0 10 10" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round">
+      <path d="M9 1 1 9M9 5 5 9M9 9 9 9"/>
+    </svg>
   </div>
 
 <script>
@@ -510,6 +524,26 @@
     if (!(w > 0) || !(h > 0)) { toast("Enter a valid size"); return; }
     parent.postMessage({ pluginMessage: { type: "resize", width: w, height: h } }, "*");
   });
+
+  /* ---------- window resize (drag the corner handle) ---------- */
+  (function () {
+    var handle = $("resizeHandle");
+    var start = null;
+    handle.addEventListener("pointerdown", function (e) {
+      e.preventDefault();
+      start = { x: e.clientX, y: e.clientY, w: window.innerWidth, h: window.innerHeight };
+      handle.setPointerCapture(e.pointerId);
+    });
+    handle.addEventListener("pointermove", function (e) {
+      if (!start) return;
+      var w = start.w + (e.clientX - start.x);
+      var h = start.h + (e.clientY - start.y);
+      parent.postMessage({ pluginMessage: { type: "resize-ui", width: w, height: h } }, "*");
+    });
+    function stopDrag() { start = null; }
+    handle.addEventListener("pointerup", stopDrag);
+    handle.addEventListener("pointercancel", stopDrag);
+  })();
 
   /* ---------- search / category / mode ---------- */
   var deb;

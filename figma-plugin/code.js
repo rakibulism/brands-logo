@@ -149,42 +149,59 @@ figma.ui.onmessage = async (msg) => {
           figma.notify("Select a layer in the canvas to replace", { error: true });
           break;
         }
-        const target = sel[0];
-        const sz = resolveSize(msg.size, target); // "auto" → the target's own size
 
-        // Our own logo frame → resize to the requested size, then swap the inner SVG.
-        if (isLogoFrame(target)) {
-          if (Math.round(target.width) !== Math.round(sz.w) || Math.round(target.height) !== Math.round(sz.h)) {
-            target.resize(Math.max(8, Math.round(sz.w)), Math.max(8, Math.round(sz.h)));
+        // Replace every selected layer, not just the first — snapshot the
+        // selection first since replacing a non-logo node removes it.
+        const targets = sel.slice();
+        const replaced = [];
+        let skipped = 0;
+
+        for (const target of targets) {
+          const sz = resolveSize(msg.size, target); // "auto" → the target's own size
+
+          // Our own logo frame → resize to the requested size, then swap the inner SVG.
+          if (isLogoFrame(target)) {
+            if (Math.round(target.width) !== Math.round(sz.w) || Math.round(target.height) !== Math.round(sz.h)) {
+              target.resize(Math.max(8, Math.round(sz.w)), Math.max(8, Math.round(sz.h)));
+            }
+            placeLogoInto(target, msg.svg, msg.name);
+            replaced.push(target);
+            continue;
           }
-          placeLogoInto(target, msg.svg, msg.name);
-          figma.currentPage.selection = [target];
-          figma.notify("Replaced with " + msg.name);
-          postSelection();
-          break;
+
+          // Any other node (frame, rectangle, image, …) → drop a logo frame on its slot.
+          const parent = target.parent;
+          if (!parent || typeof parent.insertChild !== "function") {
+            skipped++;
+            continue;
+          }
+          const index = parent.children.indexOf(target);
+          const frame = buildLogoFrame(msg.svg, msg.name, sz.w, sz.h);
+          if (sz.auto) {
+            // match the target exactly — same position and bounds
+            frame.x = target.x;
+            frame.y = target.y;
+          } else {
+            // fixed square — center it on the target's slot
+            frame.x = Math.round(target.x + (target.width - sz.w) / 2);
+            frame.y = Math.round(target.y + (target.height - sz.h) / 2);
+          }
+          parent.insertChild(index, frame);
+          target.remove();
+          replaced.push(frame);
         }
 
-        // Any other node (frame, rectangle, image, …) → drop a logo frame on its slot.
-        const parent = target.parent;
-        if (!parent || typeof parent.insertChild !== "function") {
+        if (!replaced.length) {
           figma.notify("Can't replace this layer here", { error: true });
           break;
         }
-        const index = parent.children.indexOf(target);
-        const frame = buildLogoFrame(msg.svg, msg.name, sz.w, sz.h);
-        if (sz.auto) {
-          // match the target exactly — same position and bounds
-          frame.x = target.x;
-          frame.y = target.y;
-        } else {
-          // fixed square — center it on the target's slot
-          frame.x = Math.round(target.x + (target.width - sz.w) / 2);
-          frame.y = Math.round(target.y + (target.height - sz.h) / 2);
-        }
-        parent.insertChild(index, frame);
-        target.remove();
-        figma.currentPage.selection = [frame];
-        figma.notify("Replaced with " + msg.name);
+
+        figma.currentPage.selection = replaced;
+        const label = replaced.length === 1 ? "layer" : "layers";
+        figma.notify(
+          "Replaced " + replaced.length + " " + label + " with " + msg.name +
+          (skipped ? " (" + skipped + " skipped)" : "")
+        );
         postSelection();
         break;
       }
