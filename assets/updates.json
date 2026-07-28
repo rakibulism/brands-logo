@@ -2,6 +2,13 @@
   "version": 1,
   "entries": [
     {
+      "date": "2026-07-28",
+      "tag": "fixed",
+      "id": "v1.0.2",
+      "title": "v1.0.2 — multi-select replace + resizable window",
+      "body": "Replace mode now applies to every selected layer at once, not just the first — select a batch and swap them all with one click. The plugin window is also resizable now: drag the handle in the bottom-right corner to make it bigger or smaller."
+    },
+    {
       "date": "2026-06-19",
       "tag": "improved",
       "id": "v1.0.1",
