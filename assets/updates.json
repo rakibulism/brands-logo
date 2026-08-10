@@ -2,6 +2,13 @@
   "version": 1,
   "entries": [
     {
+      "date": "2026-08-10",
+      "tag": "new",
+      "id": "sync-1",
+      "title": "2 new logos added",
+      "body": "Auto-synced from the upstream collection — 2 added, 3 updated. New: llmgateway wordmark, llmgateway."
+    },
+    {
       "date": "2026-07-28",
       "tag": "fixed",
       "id": "v1.0.2",
@@ -64,5 +71,6 @@
       "title": "Library cleanup",
       "body": "Pruned bloated and incorrect files and re-sourced clean, optimized SVGs across the collection."
     }
-  ]
+  ],
+  "seq": 1
 }
