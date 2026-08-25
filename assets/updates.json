@@ -2,6 +2,13 @@
   "version": 1,
   "entries": [
     {
+      "date": "2026-08-25",
+      "tag": "improved",
+      "id": "sync-2",
+      "title": "4 logos refreshed",
+      "body": "Auto-synced from the upstream collection — 4 updated."
+    },
+    {
       "date": "2026-08-10",
       "tag": "new",
       "id": "sync-1",
@@ -72,5 +79,5 @@
       "body": "Pruned bloated and incorrect files and re-sourced clean, optimized SVGs across the collection."
     }
   ],
-  "seq": 1
+  "seq": 2
 }
