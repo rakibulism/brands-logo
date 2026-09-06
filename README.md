@@ -89,3 +89,8 @@ The code, website and organization of this repository are released under the [MI
 If this saved you time, drop a ⭐!
 
 </div>
+<div align="center">
+
+Built by [Rakibul Islam](https://rakibulism.space) — more work and writing at [rakibulism.space](https://rakibulism.space).
+
+</div>
