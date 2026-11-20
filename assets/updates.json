@@ -2,6 +2,13 @@
   "version": 1,
   "entries": [
     {
+      "date": "2026-11-20",
+      "tag": "new",
+      "id": "sync-4",
+      "title": "2 new logos added",
+      "body": "Auto-synced from the upstream collection — 2 added. New: docker new wordmark, docker new."
+    },
+    {
       "date": "2026-10-06",
       "tag": "improved",
       "id": "sync-3",
@@ -86,5 +93,5 @@
       "body": "Pruned bloated and incorrect files and re-sourced clean, optimized SVGs across the collection."
     }
   ],
-  "seq": 3
+  "seq": 4
 }
