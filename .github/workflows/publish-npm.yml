@@ -5,7 +5,10 @@ name: Publish to npm
 #
 # Two ways to release:
 #   1. Actions tab → "Publish to npm" → Run workflow, pick patch/minor/major.
-#      The workflow bumps package.json, commits, tags vX.Y.Z and publishes.
+#      The workflow bumps package.json, publishes, then commits and tags vX.Y.Z
+#      (only after npm accepted it, so a failed publish leaves no stray tag).
+#      The daily "Sync logos from upstream" workflow starts this automatically
+#      with a patch bump whenever logo files changed.
 #   2. Bump package.json yourself and push a matching tag (git tag v1.2.3).
 #
 # Auth: npm trusted publishing (OIDC). No token is stored in the repo; npm
@@ -46,13 +49,9 @@ jobs:
           node-version: 24
           registry-url: https://registry.npmjs.org
 
-      - name: Bump version, commit and tag (manual runs)
+      - name: Bump version (manual runs)
         if: github.event_name == 'workflow_dispatch'
-        run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          npm version "${{ inputs.bump }}" -m "chore: release v%s"
-          git push --follow-tags
+        run: npm version "${{ inputs.bump }}" --no-git-tag-version
 
       - name: Check tag matches package.json (tag pushes)
         if: github.event_name == 'push'
@@ -73,3 +72,14 @@ jobs:
 
       - name: Publish
         run: npm publish --access public
+
+      - name: Commit and tag the release (manual runs)
+        if: github.event_name == 'workflow_dispatch'
+        run: |
+          VERSION="v$(node -p "require('./package.json').version")"
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git commit -am "chore: release ${VERSION}"
+          git tag "${VERSION}"
+          git pull --rebase origin "${GITHUB_REF_NAME}"
+          git push origin "HEAD:${GITHUB_REF_NAME}" "${VERSION}"
