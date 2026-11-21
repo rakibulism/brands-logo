@@ -516,6 +516,21 @@ readme = f"""<div align="center">
 <img src="https://raw.githubusercontent.com/{REPO}/master/logos/github.svg" height="32" alt="GitHub" />
 ```
 
+**From npm:** `npm i brands-logo`, then import any file, e.g. `brands-logo/logos/github.svg`. The package also exports the full index:
+
+```js
+import {{ logos, categories, url }} from "brands-logo";
+
+logos.length;    // every logo: {{ n: "github", c: "dev", w: false }}
+url("github");   // versioned jsDelivr link to logos/github.svg
+```
+
+**From the npm CDN** (pin a version so the file never changes under you):
+
+```html
+<img src="https://cdn.jsdelivr.net/npm/brands-logo@1/logos/github.svg" height="32" alt="GitHub" />
+```
+
 **Naming convention:** `brand.svg` = icon only · `brand-wordmark.svg` = logotype (icon + name).
 
 > 💡 In the category tables, **click any icon** to open its file — then use GitHub's download button, or visit the [gallery]({PAGES_URL}) for true 1-click downloads.

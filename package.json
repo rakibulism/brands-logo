@@ -1,0 +1,47 @@
+{
+  "name": "brands-logo",
+  "version": "1.0.0",
+  "description": "15,000+ clean SVG logos for apps, tools and tech brands, with a searchable JSON index.",
+  "keywords": [
+    "logos",
+    "brand",
+    "brands",
+    "svg",
+    "icons",
+    "brand-icons",
+    "wordmark",
+    "tech-logos"
+  ],
+  "homepage": "https://brandslogo.rakibulism.space/",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/rakibulism/brands-logo.git"
+  },
+  "bugs": {
+    "url": "https://github.com/rakibulism/brands-logo/issues"
+  },
+  "license": "MIT",
+  "author": "Rakibul Islam (https://rakibulism.space)",
+  "type": "module",
+  "main": "./npm/index.cjs",
+  "module": "./npm/index.js",
+  "types": "./npm/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./npm/index.d.ts",
+      "import": "./npm/index.js",
+      "require": "./npm/index.cjs"
+    },
+    "./logos.json": "./assets/logos.json",
+    "./logos/*": "./logos/*",
+    "./package.json": "./package.json"
+  },
+  "files": [
+    "logos/",
+    "assets/logos.json",
+    "npm/",
+    "LICENSE",
+    "README.md"
+  ],
+  "sideEffects": false
+}
