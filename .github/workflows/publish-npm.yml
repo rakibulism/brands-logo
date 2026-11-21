@@ -8,8 +8,11 @@ name: Publish to npm
 #      The workflow bumps package.json, commits, tags vX.Y.Z and publishes.
 #   2. Bump package.json yourself and push a matching tag (git tag v1.2.3).
 #
-# Needs one repo secret: NPM_TOKEN (an npm "Automation" or granular token
-# with publish rights on brands-logo).
+# Auth: npm trusted publishing (OIDC). No token is stored in the repo; npm
+# trusts this workflow file because it is registered on npmjs.com under
+# brands-logo → Settings → Trusted publishers (GitHub Actions,
+# rakibulism/brands-logo, workflow publish-npm.yml). Releases publish straight
+# away with provenance, with no staged 2FA approval. Needs npm 11.5.1+.
 
 on:
   workflow_dispatch:
@@ -24,7 +27,7 @@ on:
 
 permissions:
   contents: write
-  id-token: write # npm provenance
+  id-token: write # npm trusted publishing (OIDC) + provenance
 
 concurrency:
   group: publish-npm
@@ -40,7 +43,7 @@ jobs:
 
       - uses: actions/setup-node@v5
         with:
-          node-version: 22
+          node-version: 24
           registry-url: https://registry.npmjs.org
 
       - name: Bump version, commit and tag (manual runs)
@@ -65,7 +68,8 @@ jobs:
           node -e "const b=require('./npm/index.cjs'); if(!b.logos.length||!b.url('github')) process.exit(1); console.log(b.count,'logos')"
           node --input-type=module -e "import {logos,url} from './npm/index.js'; if(!logos.length) process.exit(1); console.log(url('github'))"
 
+      - name: Use an npm with trusted publishing support
+        run: npm install -g npm@latest && npm --version
+
       - name: Publish
-        run: npm publish --provenance --access public
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+        run: npm publish --access public
