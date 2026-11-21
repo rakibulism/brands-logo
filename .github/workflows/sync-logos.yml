@@ -13,6 +13,7 @@ on:
 
 permissions:
   contents: write
+  actions: write # start the "Publish to npm" workflow after a logo change
 
 concurrency:
   group: sync-logos
@@ -50,6 +51,7 @@ jobs:
           fi
 
       - name: Commit & push if anything changed
+        id: commit
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
@@ -61,4 +63,13 @@ jobs:
             git commit -m "chore: sync logos from upstream (automated, ${COUNT} logo files changed)"
             git push
             echo "Synced ${COUNT} changed logo files."
+            echo "logos_changed=${COUNT}" >> "$GITHUB_OUTPUT"
           fi
+
+      # Pushes made with GITHUB_TOKEN don't trigger other workflows, but a
+      # workflow_dispatch does, so start the npm release explicitly.
+      - name: Release the new logos to npm
+        if: steps.commit.outputs.logos_changed != '' && steps.commit.outputs.logos_changed != '0'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh workflow run publish-npm.yml --ref "${GITHUB_REF_NAME}" -f bump=patch
